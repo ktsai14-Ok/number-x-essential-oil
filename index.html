@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>深夜香氣數字室 | 你的靈魂藍圖解析</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 載入 html2canvas 套件以支援長圖下載功能 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        oat: '#F9F8F6',
+                        sage: '#4A5D4E',
+                        sageDark: '#3A4A3E',
+                        textMain: '#44403C',
+                        textLight: '#78716C',
+                        accent: '#EBE3D5',
+                        gold: '#B89B72'
+                    },
+                    fontFamily: {
+                        serif: ['"Shippori Mincho"', 'serif'],
+                        sans: ['"Noto Sans TC"', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.8s ease-out forwards',
+                        'slide-up': 'slideUp 0.8s ease-out forwards',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #F9F8F6; }
+        .hidden-view { display: none; }
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+        .grid-cell { position: relative; }
+        .grid-cell.active { background-color: #EBE3D5; color: #4A5D4E; font-weight: 700; }
+        .grid-cell.missing { background-color: #ffffff; color: #D6D3D1; border: 1px dashed #D6D3D1; }
+        .line-badge { background-color: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); }
+    </style>
+</head>
+<body class="text-textMain font-sans antialiased min-h-screen flex flex-col selection:bg-sage selection:text-white relative overflow-x-hidden">
+
+    <header class="py-8 text-center animate-fade-in relative z-10">
+        <!-- 裝飾用葉片 Icon -->
+        <svg class="w-8 h-8 mx-auto mb-3 text-sage/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
+            <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+        </svg>
+        <h1 class="text-2xl tracking-widest text-sage font-serif font-medium">深夜香氣數字室</h1>
+        <p class="text-xs text-textLight mt-2 tracking-widest">能量密碼解析 × 芳香療癒</p>
+    </header>
+
+    <main class="max-w-[430px] mx-auto px-4 pb-20 w-full flex-grow flex flex-col items-center relative z-10">
+        
+        <!-- 步驟 1: 輸入畫面 -->
+        <div id="view-input" class="bg-white p-8 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.03)] w-full text-center animate-slide-up border border-oat relative overflow-hidden">
+            <h2 class="text-xl mb-6 text-textMain font-serif leading-relaxed">
+                忙碌了一天，<br>現在，把時間留給自己。
+            </h2>
+            <p class="text-sm text-textLight mb-8">請輸入生日，為你調取專屬的能量藍圖與香氣處方。</p>
+            <form id="calc-form" class="space-y-6">
+                <div class="flex flex-col items-center">
+                    <input
+                        type="date"
+                        id="birth-date"
+                        class="w-full px-5 py-4 bg-oat border-none rounded-2xl focus:ring-1 focus:ring-sage outline-none text-textMain text-center font-sans tracking-widest text-lg"
+                        required
+                    />
+                </div>
+                <button
+                    type="submit"
+                    class="px-8 py-4 w-full bg-sage hover:bg-sageDark text-white rounded-full transition-all duration-300 tracking-widest shadow-sm hover:shadow-md text-sm flex items-center justify-center space-x-2"
+                >
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                    <span>解碼我的靈魂藍圖</span>
+                </button>
+            </form>
+        </div>
+
+        <!-- 步驟 2: 載入畫面 -->
+        <div id="view-loading" class="hidden-view flex-col items-center justify-center py-24 w-full">
+            <svg class="w-12 h-12 text-sage animate-pulse-slow mb-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/>
+            </svg>
+            <p class="text-sage tracking-widest animate-pulse-slow font-serif text-sm">正在滴入靈魂香氣...</p>
+        </div>
+
+        <!-- 步驟 3: 結果畫面 -->
+        <div id="view-result" class="hidden-view w-full space-y-5">
+            <div id="report-content" class="space-y-5"></div>
+            
+            <div class="flex flex-col items-center justify-center pt-8 pb-6 space-y-5 animate-slide-up" style="animation-delay: 0.8s;">
+                <button id="btn-download" class="px-8 py-4 bg-sage hover:bg-sageDark text-white rounded-full transition-all duration-300 tracking-widest shadow-md flex items-center justify-center space-x-2 text-sm w-full">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    <span>儲存為專屬長圖</span>
+                </button>
+                <button id="btn-reset" class="text-sm text-textLight hover:text-sage underline underline-offset-8 transition-colors tracking-widest">
+                    收起藍圖，晚安
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // --- 核心資料庫 ---
+        // (保持原有的 numberTraits, lineTraits, missingNumberOils, energyData, personalYearRituals 完整不變)
+        const numberTraits = {
+            1: { title: "開創與獨立", desc: "習慣掌握方向，擁有絕佳的執行力。你總能一眼看透事情的本質，快速做出決定。但在這份堅強背後，其實隱藏著對失控的恐懼。你極度渴望獨立自主，卻也因為走得太快，偶爾會感到孤單。今晚，試著放下「凡事只能靠自己」的重擔，允許身邊的人成為你的依靠。" },
+            2: { title: "溫暖與包容", desc: "總是溫柔體貼，是大家公認的公關高手與避風港。你擁有無比細膩的雷達，總能敏銳察覺他人的需求，努力讓身邊的人感到舒服。但也因為過度在乎別人的感受，常讓自己陷入糾結，甚至在不知不覺中弄丟了真實的自己。親愛的，練習把注意力拉回自己身上，有時候，一個明快但不那麼完美的決定，好過無盡的內耗。" },
+            3: { title: "表達與純真", desc: "內心住著一個充滿好奇與純真的小孩。你擁有獨特的美感與豐沛的創造力，只要接觸到新鮮有趣的事物，整個人就會發光。然而，你也是個絕對的理想主義者，對於別人的不認同容易感到受傷。請記得，世界本來就不完美，珍惜當下的小確幸，你的光芒不需要所有人的掌聲來證明。" },
+            4: { title: "穩定與秩序", desc: "追求極致的安穩與秩序，總能把混亂梳理得井井有條。你是大家最信賴的依靠，不過，生活中的突發狀況常會瞬間引爆你的焦慮。那些對物質與規律的執著，其實都來自對未知的不安。試著相信，真正的安全感來自你強大的內心，偶爾偏離計畫，去承擔一點點改變的風險，或許會遇見意外的美麗風景。" },
+            5: { title: "自由與探索", desc: "嚮往無拘無束的自由靈魂，對世界充滿熱情。絕佳的口才與魅力總能輕易感染周遭的人。你渴望體驗多采多姿的生活，討厭被死板的責任與框架綁住。但在追逐新鮮感的同時，有時也會因為缺乏目標而感到深深的空虛。給自己一點耐心，為真正熱愛的事物專注停留，你會發現另一種深刻的自由。" },
+            6: { title: "療癒與責任", desc: "充滿大愛的完美照顧者，總能精準接住別人的脆弱。你擁有極強的同理心，習慣把所有的責任扛在肩上，如果沒有得到相對的感激，心底便會生出深深的委屈與疲憊。今晚，請把那份無私的愛分一點給自己，學習設立界線，不要剝奪別人成長的機會，因為你不需要做到完美也能被深深愛著。" },
+            7: { title: "探究與真理", desc: "渴望探究事物本質，擁有超凡的觀察力與邏輯。你需要大量的獨處時間來思考與整理內心世界，過度的社交常會嚴重消耗你的能量。有時為了一探究竟，你會固執地鑽牛角尖，甚至逃避不完美的現實。親愛的，給大腦一點喘息的空間，及早面對真實的狀況，答案往往會在平靜中自然浮現。" },
+            8: { title: "豐盛與權威", desc: "蘊藏無限潛能，擁有精準的直覺與強大的格局。你總能看見事物的長遠價值，渴望在現實世界中創造豐盛，對自我要求極高。但當現實與內心的期待產生落差時，你容易陷入深深的自我懷疑與價值失落。卸下必須隨時堅強的盔甲吧，誠實面對自己的脆弱與真實想法，你本身的存在就已經足夠有價值。" },
+            9: { title: "智慧與慈悲", desc: "擁有包容萬物的胸懷，總是帶著純粹的善意幫助他人。你的內心有著極為浪漫的夢想，充滿豐富的才華。但也因此容易無意識地吸收周圍的負面情緒，讓自己變得沉重且疲憊。學習輕盈地放下那些不屬於你的承擔，多聽聽身邊務實的建議，讓夢想不僅僅是夢想，而能踏實地在生活中扎根。" }
+        };
+
+        const lineTraits = {
+            '123': { title: "1-2-3 藝術/獨立線", desc: "你擁有獨特的審美與強大的獨立完成能力。習慣凡事自己來，卻也常在人際互動的拿捏上感到疲憊。" },
+            '456': { title: "4-5-6 秩序/治療線", desc: "你是天生的問題解決專家。能在混亂中理出秩序，甚至有點完美主義。總是把一切打理得井井有條，卻忘了讓自己放鬆。" },
+            '789': { title: "7-8-9 權力/靈性線", desc: "你擁有令人羨慕的貴人運。直覺敏銳，總能吸引資源。比起盲目苦幹，你更適合運用智慧與直覺，在冥冥中獲得助力。" },
+            '147': { title: "1-4-7 安全/理財線", desc: "你極度需要物質與生活上的安全感。追求穩定、擅長規劃，但面對突如其來的改變時，容易引發深層的焦慮。" },
+            '258': { title: "2-5-8 感情/表達線", desc: "你具備極高的同理心與表達天賦。能敏銳察覺周遭情緒，但也常因過度共情或心直口快而帶來內耗。" },
+            '369': { title: "3-6-9 創意/想像線", desc: "你的大腦裡裝著無盡的想像力。對新鮮事物充滿熱情，心裡住著一個理想主義的任性小孩，面對現實框架時常感到無力。" },
+            '159': { title: "1-5-9 事業/自由線", desc: "你天生帶有開創者的特質。渴望擁有絕對的掌控權與自由，討厭被體制或他人限制，常在工作成就與身心透支中拉扯。" },
+            '357': { title: "3-5-7 人緣/公關線", desc: "你擁有絕佳的人際直覺。總能輕易看穿別人的需求並得體回應，但你極度需要個人空間，把真正的內心藏得很深。" }
+        };
+
+        const missingNumberOils = {
+            1: { type: "木質類", missing: "自信與邊界", name: "大西洋雪松", desc: "為你建立隱形的能量防護網，不再輕易被日常瑣事掏空。找回堅定的自我邊界。" },
+            2: { type: "樹脂類", missing: "流動與接收", name: "乳香", desc: "安撫你總是先照顧別人的委屈，帶來深沉的安定感。允許自己也有脆弱的時候。" },
+            3: { type: "花朵類", missing: "喜悅與魅力", name: "甜橙 × 依蘭", desc: "喚醒內在那個純粹愛笑的孩子。允許生命單純為了喜悅而綻放，不為什麼責任。" },
+            4: { type: "根部類", missing: "安定與踏實", name: "岩蘭草", desc: "深沉泥土香，幫你把焦慮運轉的大腦關機。穩穩抓住當下，緩解生活的不確定感。" },
+            5: { type: "葉片類", missing: "空間與呼吸", name: "歐薄荷", desc: "推開現實擁擠感。在有限的喘息空間裡，為你的靈魂打開一扇通往森林的窗。" },
+            6: { type: "藥草類", missing: "修復與愛己", name: "真正薰衣草", desc: "像大自然的擁抱般溫柔，安撫你所有的透支。提醒你接納不完美的自己也是一種愛。" },
+            7: { type: "木質類", missing: "平靜與沉澱", name: "檀香", desc: "瞬間讓喋喋不休的大腦安靜下來。在深夜帶你進入絕對私密、深沉的內在平靜。" },
+            8: { type: "果實類", missing: "價值與豐盛", name: "佛手柑", desc: "化解卡在心裡的自我懷疑。將你對身邊人的隱形付出，轉化為心靈的實質富足。" },
+            9: { type: "樹脂/木質", missing: "清理與釋放", name: "絲柏", desc: "洗刷無意識吸收來的他人情緒。切斷過度的能量連結，為身心帶來豁然開朗的輕鬆。" }
+        };
+
+        const energyData = {
+            1: { archetype: "果敢進取的開創者", color: "紅", food: "單一原型食物", style: "獨特個性", health: "整體能量", aroma: "木質類", lifeGoal: "掌握生命的自主權，藉由個人堅定的意志去改變並影響周遭的世界。", oils: "雪松、花梨木、松、黑雲杉、東印度白檀木、澳洲檀香、阿米香樹、癒創木、檜木、沉香、樟樹、冷杉、秘魯聖木。", communication: "「我想先聽聽你的意見。」—— 你極度需要被尊重，試著也這樣溫柔地詢問內心的自己，找回不帶防備的安全感。" },
+            2: { archetype: "協調資源的和平使者", color: "橙", food: "富含膠質食物", style: "協調搭配", health: "循環系統", aroma: "根部類", lifeGoal: "謀求和平與理解，在各種關係中整合事實並建立深深的互信與和諧。", oils: "薑、歐白芷、岩蘭草、鳶尾根、當歸、穗甘松。", communication: "「這件事交給你決定就好。」—— 你習慣把主導權交給信任的人。今晚，試著把人生的方向盤溫柔地拿回自己手裡。" },
+            3: { archetype: "追求卓越的完美主義", color: "黃", food: "甜食", style: "可愛亮眼", health: "皮膚與頭髮", aroma: "花朵類", lifeGoal: "追求卓越的自我表現，渴望鶴立雞群，如盛開花朵般綻放專屬的光芒。", oils: "玫瑰、茉莉、橙花、洋甘菊、依蘭、天竺葵、永久花、薰衣草、桂花、玉蘭花、緬梔、晚香玉、丁香花苞。", communication: "「我知道你想要什麼。」—— 你極度需要被認同與理解。試著先肯定自己，再去聆聽外界的聲音。" },
+            4: { archetype: "追求安穩的實踐家", color: "綠", food: "優質澱粉", style: "俐落制服風", health: "骨骼系統", aroma: "果實類", lifeGoal: "建立穩固踏實的安全感，在和諧的規律中獲得他人的尊重與深深的肯定。", oils: "佛手柑、葡萄柚、檸檬、甜橙、橘子、萊姆、杜松子、黑胡椒、山雞椒、貞節果、香草。", communication: "「這是有憑有據的。」—— 你需要絕對的安全感與實際證明。但有時，跟著直覺走去冒點險，也是一種美麗的選項。" },
+            5: { archetype: "熱愛生活的享樂主義", color: "藍", food: "香料調味", style: "自由舒適", health: "肌肉關節", aroma: "香料類", lifeGoal: "體驗生命所有的美好與豐富，追求不受拘束、充滿活力的享樂生活風格。", oils: "黑胡椒、肉桂、丁香、豆蔻、肉豆蔻、茴香、薑、芫荽籽、月桂、百里香、羅勒、野馬鬱蘭、山雞椒、蒔蘿、歐芹、檸檬草。", communication: "「我們再看看、保持彈性吧。」—— 你討厭被逼迫承諾。給自己保留選擇的權利，能讓你感到無比安心。" },
+            6: { archetype: "極富服務精神的照顧", color: "靛", food: "新鮮蔬果", style: "專業工作裝", health: "免疫系統", aroma: "藥草類", lifeGoal: "無條件地付出愛與療癒，在被需要與感激之中，找到自己存在的價值。", oils: "迷迭香、羅勒、真正鼠尾草、快樂鼠尾草、辣薄荷、青葉薄荷、百里香、香蜂草、甜馬鬱蘭、野馬鬱蘭、西洋蓍草、廣藿香、檸檬草、牛膝草、玫瑰草、薰衣草。", communication: "「我真的非常需要你的幫忙。」—— 你享受被需要的價值感。但別忘了，你最該無條件幫助的人，其實是自己。" },
+            7: { archetype: "博學多聞的研究學者", color: "紫", food: "優質油脂", style: "複雜細節", health: "消化系統", aroma: "葉片類", lifeGoal: "看透事物的本質，關懷環境並高瞻遠矚，在不斷學習中長出深邃的智慧。", oils: "尤加利、絲柏、苦橙葉、茶樹、月桂、綠花白千層、羅文莎葉、桃金娘、冬青、芳樟葉、玉蘭葉、芳枸葉、坤希草。", communication: "「是真的嗎？我們一起來研究看看。」—— 你需要充滿邏輯的探索空間。給大腦一點時間，慢慢梳理真實的思緒。" },
+            8: { archetype: "洞察先機的先驅者", color: "金", food: "優質蛋白質", style: "奢華品味", health: "內分泌系統", aroma: "種子類", lifeGoal: "精準洞察先機與潛力，在自己與他人身上創造出豐盛的美麗與深刻的理解。", oils: "茴香、芫荽籽、胡蘿蔔籽、蒔蘿、歐芹、肉豆蔻。", communication: "「這對未來絕對有實質的幫助。」—— 你總是著眼於長遠的潛力。大方承認自己渴望成功與價值，一點都不世俗。" },
+            9: { archetype: "追求真理的慈善夢想", color: "白", food: "發酵食物", style: "戲劇元素", health: "神經系統", aroma: "樹脂類", lifeGoal: "尋找靈魂安身立命的所在，帶著公平的決心與意志力，實現無私的夢想。", oils: "乳香、沒藥、安息香、癒創木、秘魯香脂、古巴香脂、欖香脂、白松香、岩玫瑰。", communication: "「沒問題，我們一起來擴大這個夢想。」—— 你是無可救藥的樂觀主義者。找一個能接住你夢想的人，陪你一起落地。" }
+        };
+
+        const personalYearRituals = {
+            1: { theme: "播種與開創", aroma: "木質類", step1: "隨著木質的沉穩氣息，吐出恐懼與自我懷疑。", step2: "感受挺拔的樹木能量，注入大步向前的勇氣。", mantra: "我準備好迎接全新的開始，我是自己生命的主導者。" },
+            2: { theme: "合作與平衡", aroma: "根部類", step1: "在深沉的泥土香中，釋放為了迎合他人累積的委屈。", step2: "讓根部的安定力量，溫柔修復你的人際邊界。", mantra: "我允許自己被愛，也能在關係中安穩地做自己。" },
+            3: { theme: "表達與綻放", aroma: "花朵類", step1: "隨著花朵甜美氣息，吐出不敢表達的聲音。", step2: "感受盛開的生命力，喚醒內在純粹的喜悅與創造力。", mantra: "我值得擁有快樂，我允許自己如花朵般自由綻放。" },
+            4: { theme: "紮根與建設", aroma: "果實類", step1: "藉由果實飽滿氣息，呼出生活中的失控感與焦慮。", step2: "吸收孕育果實的踏實能量，建立穩固的安全感。", mantra: "我在安穩的節奏中，一步步築起屬於我的避風港。" },
+            5: { theme: "改變與突破", aroma: "香料類", step1: "在辛香料溫暖刺激中，抖落僵化的舊習慣與束縛。", step2: "感受香氣帶來的流動感，激發擁抱變化的熱情。", mantra: "我敞開心胸迎接生命的驚喜，我在變動中依然自由。" },
+            6: { theme: "療癒與愛己", aroma: "藥草類", step1: "隨著藥草清新，洗刷過度承擔他人情緒的疲憊。", step2: "讓植物修復力，溫柔地將愛重新填補回自己身上。", mantra: "我接納全然的自己，愛別人之前，先好好愛自己。" },
+            7: { theme: "沉澱與覺察", aroma: "葉片類", step1: "藉由葉片清透氣息，吹散大腦過度運轉的雜念。", step2: "感受呼吸的流動，潛入內心深層的平靜與智慧。", mantra: "我在獨處中找回力量，一切的答案都在我心中。" },
+            8: { theme: "豐盛與收穫", aroma: "種子類", step1: "在微小氣息裡，釋放對金錢與自我價值的匱乏感。", step2: "吸收種子爆發的無限潛能，啟動顯化豐盛的能量。", mantra: "我值得擁有世間的美好，我正走在豐盛的道路上。" },
+            9: { theme: "釋放與轉化", aroma: "樹脂類", step1: "隨著樹脂煙燻感，果斷放下不再服務於你的執念。", step2: "讓古老樹脂能量淨化身心，為下一個循環騰出空間。", mantra: "我平靜告別過去，感謝一切經歷成就了現在的我。" }
+        };
+
+        // --- 核心運算邏輯 ---
+        const calculateSoulBlueprint = (birthDate) => {
+            const dateStr = birthDate.replace(/-/g, '');
+            const rawDigits = dateStr.split('').map(Number);
+            
+            let sum = rawDigits.reduce((a, b) => a + b, 0);
+            let talent = sum.toString().split('').map(Number);
+            let life = talent.reduce((a, b) => a + b, 0);
+            
+            while (life > 9) {
+                let temp = life.toString().split('').map(Number);
+                life = temp.reduce((a, b) => a + b, 0);
+            }
+
+            const day = birthDate.split('-')[2];
+            let birthNum = day.split('').map(Number).reduce((a, b) => a + b, 0);
+            while (birthNum > 9) {
+                birthNum = birthNum.toString().split('').map(Number).reduce((a, b) => a + b, 0);
+            }
+
+            const gridCounts = { 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0 };
+            const allNums = [...rawDigits, ...talent, life, birthNum];
+            allNums.forEach(n => { if(n > 0 && n <= 9) gridCounts[n]++; });
+
+            const foundLines = [];
+            if (gridCounts[1] > 0 && gridCounts[2] > 0 && gridCounts[3] > 0) foundLines.push('123');
+            if (gridCounts[4] > 0 && gridCounts[5] > 0 && gridCounts[6] > 0) foundLines.push('456');
+            if (gridCounts[7] > 0 && gridCounts[8] > 0 && gridCounts[9] > 0) foundLines.push('789');
+            if (gridCounts[1] > 0 && gridCounts[4] > 0 && gridCounts[7] > 0) foundLines.push('147');
+            if (gridCounts[2] > 0 && gridCounts[5] > 0 && gridCounts[8] > 0) foundLines.push('258');
+            if (gridCounts[3] > 0 && gridCounts[6] > 0 && gridCounts[9] > 0) foundLines.push('369');
+            if (gridCounts[1] > 0 && gridCounts[5] > 0 && gridCounts[9] > 0) foundLines.push('159');
+            if (gridCounts[3] > 0 && gridCounts[5] > 0 && gridCounts[7] > 0) foundLines.push('357');
+
+            const missingNums = Object.keys(gridCounts).filter(k => gridCounts[k] === 0).map(Number);
+            if (missingNums.length === 0) missingNums.push(5); 
+
+            const currentYearDigits = [2, 0, 2, 6];
+            const monthDigits = birthDate.split('-')[1].split('').map(Number);
+            const dayDigits = birthDate.split('-')[2].split('').map(Number);
+            const yearSum = [...currentYearDigits, ...monthDigits, ...dayDigits].reduce((a, b) => a + b, 0);
+            let personalYear = yearSum.toString().split('').map(Number).reduce((a, b) => a + b, 0);
+            while(personalYear > 9) {
+                personalYear = personalYear.toString().split('').map(Number).reduce((a, b) => a + b, 0);
+            }
+
+            return {
+                life, birthNum, talent: talent.join('/'), talentArray: talent,  
+                gridCounts, foundLines, missingNums: missingNums.slice(0, 2),
+                personalYear
+            };
+        };
+
+        // --- SVG 資源庫 ---
+        const svgs = {
+            leaf: `<svg class="w-5 h-5 text-sage mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>`,
+            sparkle: `<svg class="w-5 h-5 text-gold mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>`,
+            droplet: `<svg class="w-5 h-5 text-sage mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg>`,
+            moon: `<svg class="w-5 h-5 text-sageDark mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>`,
+            flower: `<svg class="w-5 h-5 text-gold mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c4.97-1.33 8-5.38 8-9.5A7.5 7.5 0 0 0 12 5a7.5 7.5 0 0 0-8 7.5c0 4.12 3.03 8.17 8 9.5Z"/><path d="M12 22c-4.97-1.33-8-5.38-8-9.5A7.5 7.5 0 0 1 12 5a7.5 7.5 0 0 1 8 7.5c0 4.12-3.03 8.17-8 9.5Z"/><path d="M12 22c-2.43-2.18-4-5.59-4-9.5A7.5 7.5 0 0 1 12 5a7.5 7.5 0 0 1 4 7.5c0 3.91-1.57 7.32-4 9.5Z"/></svg>`,
+            watermark: `<svg class="absolute w-64 h-64 text-sage opacity-5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>`
+        };
+
+        // --- 介面渲染 ---
+        const switchView = (hideId, showId) => {
+            document.getElementById(hideId).classList.add('hidden-view');
+            document.getElementById(showId).classList.remove('hidden-view');
+        };
+
+        const form = document.getElementById('calc-form');
+        const reportContent = document.getElementById('report-content');
+        
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const dateVal = document.getElementById('birth-date').value;
+            if (!dateVal) return;
+
+            const bp = calculateSoulBlueprint(dateVal);
+            
+            switchView('view-input', 'view-loading');
+            
+            setTimeout(() => {
+                renderReport(bp);
+                switchView('view-loading', 'view-result');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 2000);
+        });
+
+        const renderReport = (bp) => {
+            let linesHtml = '';
+            if (bp.foundLines.length > 0) {
+                linesHtml = bp.foundLines.map(lineKey => `
+                    <div class="mb-4">
+                        <span class="inline-block px-3 py-1 rounded-full text-xs font-medium line-badge text-accent mb-2">
+                            ${lineTraits[lineKey].title}
+                        </span>
+                        <p class="text-[13px] text-white/90 leading-relaxed">
+                            ${lineTraits[lineKey].desc}
+                        </p>
+                    </div>
+                `).join('');
+            } else {
+                linesHtml = `
+                    <p class="text-[13px] text-white/90 leading-relaxed mb-4">
+                        你的能量分佈獨特，沒有形成連線框限。你的天賦會強烈展現在命數 <strong>${bp.life}</strong>。不受規則束縛，就是你最大的優勢。
+                    </p>
+                `;
+            }
+
+            const html = `
+                <div id="capture-area" class="bg-oat pb-6 relative overflow-hidden">
+                    
+                    <!-- 背景裝飾浮水印 -->
+                    <div class="absolute top-[-20px] right-[-40px] transform rotate-45">${svgs.watermark}</div>
+                    <div class="absolute bottom-[200px] left-[-60px] transform -rotate-12">${svgs.watermark}</div>
+
+                    <!-- 長圖專屬表頭 -->
+                    <div class="text-center pt-8 pb-6 relative z-10">
+                        <svg class="w-6 h-6 mx-auto mb-2 text-sage/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+                        </svg>
+                        <h2 class="text-2xl tracking-widest text-sage font-serif font-medium mb-1">深夜香氣數字室</h2>
+                        <p class="text-[10px] text-textLight tracking-widest">能量密碼解析 × 芳香療癒</p>
+                    </div>
+
+                    <!-- Block 1: 能量密碼總覽 -->
+                    <div class="bg-white/90 backdrop-blur-md rounded-3xl p-6 shadow-sm border border-white/50 animate-slide-up mx-1 relative z-10">
+                        <h3 class="text-center text-sage font-serif text-base mb-5 tracking-widest border-b border-oat pb-4 flex items-center justify-center">
+                            ${svgs.sparkle} 核心能量解碼
+                        </h3>
+                        <div class="grid grid-cols-2 gap-y-6 gap-x-4 text-center">
+                            <div>
+                                <p class="text-3xl font-serif text-sage mb-1">${bp.life}</p>
+                                <p class="text-[11px] text-textLight font-medium tracking-wider">命數</p>
+                            </div>
+                            <div>
+                                <p class="text-3xl font-serif text-textMain mb-1">${bp.birthNum}</p>
+                                <p class="text-[11px] text-textLight font-medium tracking-wider">生日數</p>
+                            </div>
+                            <div>
+                                <p class="text-3xl font-serif text-textMain mb-1 tracking-tighter">${bp.talent}</p>
+                                <p class="text-[11px] text-textLight font-medium tracking-wider">天賦數</p>
+                            </div>
+                            <div>
+                                <p class="text-3xl font-serif text-textMain mb-1">${bp.personalYear}</p>
+                                <p class="text-[11px] text-textLight font-medium tracking-wider">流年數</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Block 2: 黃金三角人格剖析 -->
+                    <div class="bg-white/90 backdrop-blur-md rounded-3xl p-6 shadow-sm border border-white/50 animate-slide-up mx-1 mt-4 relative z-10" style="animation-delay: 0.1s;">
+                        <h3 class="text-sage font-serif text-base mb-4 tracking-widest flex items-center">
+                            ${svgs.leaf} 特質分析 | 黃金三角
+                        </h3>
+                        
+                        <div class="space-y-6 mt-5">
+                            <div class="flex items-start">
+                                <div class="w-10 h-10 shrink-0 bg-accent/60 rounded-full flex items-center justify-center text-sage font-serif text-lg mr-3 shadow-sm">${bp.life}</div>
+                                <div>
+                                    <h4 class="font-medium text-textMain mb-1 text-sm">想成為的樣子 (命數 ${bp.life})</h4>
+                                    <p class="text-[10px] text-sage border border-sage/30 px-2 py-0.5 rounded-full inline-block mb-1.5 bg-sage/5">${numberTraits[bp.life].title}</p>
+                                    <p class="text-[13px] text-textLight leading-relaxed text-justify">${numberTraits[bp.life].desc}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="w-10 h-10 shrink-0 bg-oat border border-sage/20 rounded-full flex items-center justify-center text-textLight font-serif text-lg mr-3">${bp.birthNum}</div>
+                                <div>
+                                    <h4 class="font-medium text-textMain mb-1 text-sm">別人眼中的你 (生日數 ${bp.birthNum})</h4>
+                                    <p class="text-[10px] text-sage border border-sage/30 px-2 py-0.5 rounded-full inline-block mb-1.5 bg-sage/5">${numberTraits[bp.birthNum].title}</p>
+                                    <p class="text-[13px] text-textLight leading-relaxed text-justify">大家總以為你「${numberTraits[bp.birthNum].desc.split('。')[0]}」，這是你應對社會的保護色。</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start">
+                                <div class="w-10 h-10 shrink-0 bg-[#E8EAE6] rounded-full flex items-center justify-center text-sageDark font-serif text-xs mr-3 tracking-tighter">${bp.talent}</div>
+                                <div>
+                                    <h4 class="font-medium text-textMain mb-1 text-sm">實際的樣子 (天賦數)</h4>
+                                    <p class="text-[10px] text-sage border border-sage/30 px-2 py-0.5 rounded-full inline-block mb-1.5 bg-sage/5">${bp.talentArray.map(t => numberTraits[t].title).join(' ＋ ')}</p>
+                                    <p class="text-[13px] text-textLight leading-relaxed text-justify">卸下包裝，這是你與生俱來的真實武器。順著本能發揮，就能活得毫不費力。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Block 3: 九宮格能量盤 -->
+                    <div class="bg-sage text-white rounded-3xl p-6 shadow-md animate-slide-up mx-1 mt-4 relative z-10 overflow-hidden" style="animation-delay: 0.2s;">
+                        <!-- 九宮格內的微弱植物背景 -->
+                        <div class="absolute bottom-[-30px] right-[-30px] opacity-10">
+                            <svg class="w-32 h-32 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c4.97-1.33 8-5.38 8-9.5A7.5 7.5 0 0 0 12 5a7.5 7.5 0 0 0-8 7.5c0 4.12 3.03 8.17 8 9.5Z"/></svg>
+                        </div>
+                        
+                        <h3 class="font-serif text-base mb-5 tracking-widest flex items-center text-accent relative z-10">
+                            ${svgs.sparkle.replace('text-gold', 'text-accent')} 能量盤：連線與匱乏
+                        </h3>
+                        
+                        <div class="flex flex-col gap-6 items-center relative z-10">
+                            <div class="grid grid-cols-3 gap-2 w-[110px] h-[110px] shrink-0 font-serif text-base">
+                                ${[1,2,3,4,5,6,7,8,9].map(n => `
+                                    <div class="grid-cell flex items-center justify-center rounded-lg 
+                                        ${bp.gridCounts[n] > 0 ? 'active shadow-sm' : 'missing'}">
+                                        ${n}
+                                    </div>
+                                `).join('')}
+                            </div>
+                            
+                            <div class="w-full">
+                                <div class="mb-5">
+                                    <h4 class="text-accent text-sm font-medium mb-2 border-b border-white/20 pb-1.5">✦ 隱藏的天賦連線</h4>
+                                    ${linesHtml}
+                                </div>
+                                <div class="bg-white/10 backdrop-blur-sm p-4 rounded-xl border border-white/20">
+                                    <h4 class="text-accent text-sm font-medium mb-1.5 flex items-center">
+                                        <span class="inline-block w-1.5 h-1.5 rounded-full bg-white/50 mr-2"></span>能量短板
+                                    </h4>
+                                    <p class="text-[13px] text-white/90 leading-relaxed mb-1.5">
+                                        你缺少了 <strong>${bp.missingNums.join(' 與 ')}</strong> 的能量。
+                                    </p>
+                                    <p class="text-[13px] text-accent leading-relaxed">
+                                        這容易讓你陷入「${numberTraits[bp.missingNums[0]].title}」的兩難，情緒壓抑，思緒活躍。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Block 4: 命數能量與生活植物處方 -->
+                    <div class="bg-white/90 backdrop-blur-md rounded-3xl p-6 shadow-sm border border-white/50 animate-slide-up mx-1 mt-4 relative z-10" style="animation-delay: 0.3s;">
+                        <h3 class="text-sage font-serif text-base mb-4 tracking-widest flex items-center">
+                            ${svgs.flower} 命數能量與生活處方
+                        </h3>
+                        
+                        <div class="bg-oat p-5 rounded-2xl mb-5 border border-sage/10 space-y-4">
+                            <div>
+                                <h4 class="font-medium text-textMain text-[13px] mb-1">✦ 靈魂深層目標</h4>
+                                <p class="text-[13px] text-textLight leading-relaxed text-justify">${energyData[bp.life].lifeGoal}</p>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-sageDark text-[13px] mb-1">✦ 守護植物 (${energyData[bp.life].aroma})</h4>
+                                <p class="text-[12px] text-textLight leading-relaxed text-justify">
+                                    ${energyData[bp.life].oils}
+                                </p>
+                            </div>
+                            <div class="pt-2 border-t border-sage/10">
+                                <h4 class="font-medium text-sage text-[13px] mb-1">✦ 溝通密碼</h4>
+                                <p class="text-[12px] text-textLight leading-relaxed text-justify">${energyData[bp.life].communication}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-3 gap-2 mb-5">
+                            <div class="bg-oat p-3 rounded-xl border border-sage/5 text-center">
+                                <p class="text-[10px] text-sage mb-0.5 font-medium">幸運色</p>
+                                <p class="text-[13px] text-textMain">${energyData[bp.life].color}</p>
+                            </div>
+                            <div class="bg-oat p-3 rounded-xl border border-sage/5 text-center">
+                                <p class="text-[10px] text-sage mb-0.5 font-medium">風格</p>
+                                <p class="text-[13px] text-textMain">${energyData[bp.life].style}</p>
+                            </div>
+                            <div class="bg-oat p-3 rounded-xl border border-sage/5 text-center">
+                                <p class="text-[10px] text-sage mb-0.5 font-medium">飲食</p>
+                                <p class="text-[13px] text-textMain text-nowrap truncate overflow-hidden">${energyData[bp.life].food}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-accent/30 p-4 rounded-xl border border-accent">
+                            <h4 class="font-medium text-sageDark text-[13px] mb-1.5 flex items-center">
+                                <span class="inline-block w-1.5 h-1.5 rounded-full bg-sage mr-1.5"></span>求救信號：${energyData[bp.life].health}
+                            </h4>
+                            <p class="text-[12px] text-textMain leading-relaxed text-justify">
+                                壓力大時，情緒會反映在「${energyData[bp.life].health}」。請隨時關注身體發出的緊繃信號。
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Block 5: 植物女巫的香氣解藥 (針對缺數) -->
+                    <div class="bg-white/90 backdrop-blur-md rounded-3xl p-6 shadow-sm border border-white/50 animate-slide-up mx-1 mt-4 relative z-10" style="animation-delay: 0.4s;">
+                        <h3 class="text-sage font-serif text-base mb-4 tracking-widest flex items-center">
+                            ${svgs.droplet} 能量短板解藥
+                        </h3>
+                        
+                        <div class="space-y-3">
+                            ${bp.missingNums.map(n => `
+                                <div class="bg-oat p-4 rounded-xl">
+                                    <div class="flex justify-between items-center mb-1.5">
+                                        <h4 class="font-medium text-textMain text-[13px]">${missingNumberOils[n].type}</h4>
+                                        <span class="text-[10px] text-sage border border-sage/30 px-1.5 py-0.5 rounded-md bg-white">缺數 ${n}</span>
+                                    </div>
+                                    <p class="text-[12px] text-sageDark font-medium mb-1">${missingNumberOils[n].name}</p>
+                                    <p class="text-[12px] text-textLight leading-relaxed">${missingNumberOils[n].desc}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Block 6: 流年指引與行動儀式 -->
+                    <div class="bg-accent/80 backdrop-blur-md rounded-3xl p-6 shadow-sm animate-slide-up mx-1 mt-4 relative z-10" style="animation-delay: 0.5s;">
+                        <div class="mb-5 text-center border-b border-sage/10 pb-4">
+                            <h4 class="text-[11px] text-sage mb-1 tracking-widest">2026 流年功課</h4>
+                            <p class="text-xl font-serif text-sageDark">流年數 ${bp.personalYear} <span class="text-sm text-sage/80 ml-1 font-sans">| ${personalYearRituals[bp.personalYear].theme}</span></p>
+                        </div>
+                        
+                        <h3 class="text-sageDark font-serif text-sm mb-3 tracking-widest text-center flex items-center justify-center">
+                            ${svgs.moon} 今晚的吸嗅儀式
+                        </h3>
+                        
+                        <ul class="space-y-3 text-[13px] text-textMain bg-white/50 p-4 rounded-xl border border-white/30">
+                            <li class="flex items-start">
+                                <span class="text-sage mr-2 mt-0.5">①</span>
+                                <span>${personalYearRituals[bp.personalYear].step1}</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-sage mr-2 mt-0.5">②</span>
+                                <span>${personalYearRituals[bp.personalYear].step2}</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-sage mr-2 mt-0.5">③</span>
+                                <span><strong>默念：</strong>「${personalYearRituals[bp.personalYear].mantra}」</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- 長圖專屬頁尾 (截圖用) -->
+                    <div class="text-center mt-8 pt-5 border-t border-sage/10 mx-4 relative z-10">
+                        <p class="text-[11px] text-sage/60 tracking-widest font-serif mb-1.5 flex items-center justify-center">
+                            <svg class="w-3 h-3 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+                            願香氣陪伴你，走向內心的光明。
+                        </p>
+                        <p class="text-[9px] text-textLight/40 tracking-wider font-sans">NAT 數字能量與香氣療癒室</p>
+                    </div>
+                </div>
+            `;
+            reportContent.innerHTML = html;
+        };
+
+        document.getElementById('btn-reset').addEventListener('click', () => {
+            document.getElementById('birth-date').value = '';
+            switchView('view-result', 'view-input');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // --- 長圖下載功能 ---
+        document.getElementById('btn-download').addEventListener('click', async (e) => {
+            const btn = e.currentTarget;
+            const originalContent = btn.innerHTML;
+            
+            btn.innerHTML = `
+                <div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <span>繪製中...</span>
+            `;
+            btn.disabled = true;
+            btn.classList.add('opacity-80', 'cursor-not-allowed');
+
+            try {
+                const captureArea = document.getElementById('capture-area');
+                
+                const originalWidth = captureArea.style.width;
+                const originalMaxWidth = captureArea.style.maxWidth;
+                
+                captureArea.style.width = '430px';
+                captureArea.style.maxWidth = '430px';
+                captureArea.style.margin = '0 auto';
+                
+                const animatedEls = captureArea.querySelectorAll('.animate-slide-up');
+                animatedEls.forEach(el => {
+                    el.classList.remove('animate-slide-up');
+                    el.style.opacity = '1';
+                    el.style.transform = 'none';
+                });
+
+                await new Promise(resolve => setTimeout(resolve, 300));
+                
+                const canvas = await html2canvas(captureArea, {
+                    scale: 3, 
+                    useCORS: true, 
+                    backgroundColor: '#F9F8F6', 
+                    width: 430, 
+                    windowWidth: 430, 
+                    logging: false
+                });
+                
+                const imgData = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.download = `香氣數字室_${document.getElementById('birth-date').value}.png`;
+                link.href = imgData;
+                link.click();
+                
+                captureArea.style.width = originalWidth;
+                captureArea.style.maxWidth = originalMaxWidth;
+                
+            } catch (error) {
+                console.error('長圖生成失敗:', error);
+                alert('很抱歉，圖片生成失敗，請稍後再試。');
+            } finally {
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+                btn.classList.remove('opacity-80', 'cursor-not-allowed');
+            }
+        });
+    </script>
+</body>
+</html>
